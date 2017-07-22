@@ -8,7 +8,10 @@ import urllib
 import urllib2
 
 TELEGRAM_ENDPOINT = "https://api.telegram.org/bot"
-TELEGRAM_APIKEY = os.environ['TELEGRAM_APIKEY']
+try:
+    TELEGRAM_APIKEY = sys.argv[1]
+except IndexError:
+    TELEGRAM_APIKEY = os.environ['TELEGRAM_APIKEY']
 
 def get_updates(callback, timeout=60):
     ''' Start polling for bot updates ad libitum. Calls the provided callback upon receiving new updates.
