@@ -2,17 +2,22 @@
 import logging
 import json
 import os
+from socket import getfqdn
 import sys
 
 from communication import get_updates
 from logic import main
 
 def application(environ, start_response):
-	# update = json.loads(environ['wsgi.input'].read())
-	# main(update)
+	postdata = environ['wsgi.input'].read()
 	status = '200 OK'
-	response_body = "\n".join("{}\t\t{}".format(k, v) for k, v in os.environ.iteritems())
-	header = [("Content-Type", "text/plain"), ("Content-Length", len(response_body))]
+	if postdata:
+		update = json.loads(environ['wsgi.input'].read())
+		main(update)
+		response_body = status
+	else:
+		response_body += "Nothing to see here, move along.\n\n{}".format(getfqdn())
+	header = [("Content-Type", "text/plain"), ("Content-Length", str(len(response_body)))]
 	start_response(status, header)
 	return [response_body]
 
