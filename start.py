@@ -16,7 +16,7 @@ def application(environ, start_response):
 		main(update)
 		response_body = status
 	else:
-		response_body += "Nothing to see here, move along.\n\n{}".format(getfqdn())
+		response_body = "Nothing to see here, move along.\n\n{}".format(getfqdn())
 	header = [("Content-Type", "text/plain"), ("Content-Length", str(len(response_body)))]
 	start_response(status, header)
 	return [response_body]
