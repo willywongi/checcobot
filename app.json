@@ -1,0 +1,6 @@
+{
+    "name": "PyBot Base",
+    "description": "A barebones Telegram bot app, which can easily be deployed to Heroku.",
+    "image": "heroku/python",
+    "repository": "https://github.com/willywongi/pybot-base.git"
+}
