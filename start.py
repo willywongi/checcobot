@@ -12,7 +12,7 @@ def application(environ, start_response):
 	postdata = environ['wsgi.input'].read()
 	status = '200 OK'
 	if postdata:
-		update = json.loads(environ['wsgi.input'].read())
+		update = json.loads(postdata)
 		main(update)
 		response_body = status
 	else:
