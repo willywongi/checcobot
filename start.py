@@ -1,28 +1,28 @@
 # coding: utf-8
 import logging
-import json
 import os
-from socket import getfqdn
 import sys
 
-from communication import get_updates
+from communication import Api
 from logic import main
 
-def application(environ, start_response):
-	postdata = environ['wsgi.input'].read()
-	status = '200 OK'
-	if postdata:
-		update = json.loads(postdata)
-		main(update)
-		response_body = status
-	else:
-		response_body = "Nothing to see here, move along.\n\n{}".format(getfqdn())
-	header = [("Content-Type", "text/plain"), ("Content-Length", str(len(response_body)))]
-	start_response(status, header)
-	return [response_body]
+
+def long_poll(apikey, callback):
+	''' When started from command line, a long polling, repeat-forever loop is started:
+		1. a request is started and whenever:
+		2. if the request times out: goto 1. (it's restarted)
+		3. if Telegram sends a response (someone interacted w/ bot) a function is invoked in a thread and then goto 1.
+	'''
+	api = Api(apikey)
+	api.get_updates(callback)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(asctime)s (%(thread)s) %(levelname)s - %(message)s", stream=sys.stdout, level=logging.DEBUG)
-    logging.info("Starting your bot")
-    get_updates(main)
+	logging.basicConfig(format="%(asctime)s (%(thread)s) %(levelname)s - %(message)s", stream=sys.stdout, level=logging.DEBUG)
+	logging.info("Starting your bot")
+	try:
+		apikey = sys.argv[1]
+	except IndexError:
+		apikey = os.environ['TELEGRAM_APIKEY']
+
+	long_poll(apikey, main)
