@@ -3,7 +3,6 @@ import re
 import time
 import logging
 
-from communication import call_telegram
 from apiai import call_apiai
 
 responses = (
@@ -27,7 +26,7 @@ responses = (
 )
 CHAT_COUNTER = {}
 
-def main(update):
+def main(update, api):
     chat = update['message']['chat']
     chat_id = chat['id']
     text = update['message'].get('text')
@@ -44,7 +43,7 @@ def main(update):
             text_response = rss[len(rss) % c]
         if chat['type'] == 'private' and not text_response:
             # rispondi con smalltalk di api.ai
-            call_telegram("sendChatAction", chat_id=chat_id, action="typing")
+            api.call_telegram("sendChatAction", chat_id=chat_id, action="typing")
             res = call_apiai("query", query=text, sessionId=chat_id, lang="it")
             logging.info(res)
             try:
@@ -53,5 +52,5 @@ def main(update):
                 text_response = "Non ti capisco"
     
     if text_response:
-        call_telegram("sendMessage", chat_id=chat_id, text=text_response)
+        api.call_telegram("sendMessage", chat_id=chat_id, text=text_response)
     
