@@ -9,7 +9,7 @@ import urllib
 import urllib2
 
 TELEGRAM_ENDPOINT = "https://api.telegram.org/bot"
-
+logger = logger.getLogger("telegram-api")
 
 class Api(object):
 	def __init__(self, apikey, endpoint=TELEGRAM_ENDPOINT):
@@ -27,7 +27,7 @@ class Api(object):
 			try:
 				data = self.call_telegram("getUpdates", timeout=60, offset=update_id)
 			except socket.timeout:
-				logging.debug("Resetting request for long polling...")
+				logger.debug("Resetting request for long polling...")
 				continue
 			else:
 				
@@ -40,7 +40,7 @@ class Api(object):
 					for message in data['result']:
 						start_new_thread(callback, (message, self))
 				else:
-					logging.error("Bad response from Telegram: %s", data)
+					logger.error("Bad response from Telegram: %s", data)
 			finally:
 				# give the server a little breath.
 				time.sleep(0.5)
@@ -60,11 +60,11 @@ class Api(object):
 			data = None
 		req = urllib2.Request(url, data=data)
 		try:
-			logging.info("Calling %s...", method)
-			logging.debug("%s?%s", method, data)
+			logger.info("Calling %s...", method)
+			logger.debug("%s?%s", method, data)
 			handler = urllib2.urlopen(req, timeout=60)
 		except urllib2.HTTPError as exc:
-			logging.error("Telegram HTTPError %s, %s", exc.getcode(), exc.read())
+			logger.error("Telegram HTTPError %s, %s", exc.getcode(), exc.read())
 			raise
 
 		except Exception:

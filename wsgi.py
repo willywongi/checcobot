@@ -26,6 +26,16 @@ def get_wsgiapp(callback):
 		'root': {
 			'level': 'INFO',
 			'handlers': ['console']
+		},
+		'loggers': {
+			"telegram-api": {
+				'level': 'INFO',
+				'handlers': ['console']
+			},
+			'bot-logic': {
+				'level': 'INFO',
+				'handlers': ['console']
+			}
 		}
 	})
 
