@@ -4,6 +4,7 @@ import time
 import logging
 
 from apiai import call_apiai
+logger = logging.getLogger("bot-logic")
 
 hotwords = (
     (re.compile("grigliata"), (
@@ -43,7 +44,7 @@ def main(update, api):
         except StopIteration:
             rss = ()
         if rss:
-            logging.info("Responding to hotword")
+            logger.info("Responding to hotword")
             c = CHAT_COUNTER.get(chat_id, 0) + 1
             CHAT_COUNTER[chat_id] = c
             text_response = rss[len(rss) % c]
@@ -51,14 +52,14 @@ def main(update, api):
             # rispondi con smalltalk di api.ai
             api.call_telegram("sendChatAction", chat_id=chat_id, action="typing")
             res = call_apiai("query", query=text, sessionId=chat_id, lang="it")
-            logging.info(res)
+            logger.info(res)
             try:
                 action = res['result']['action']
             except KeyError:
                 action = None
             rss = actions.get(action)
             if rss:
-                logging.info("Responding to action %s", action)
+                logger.info("Responding to action %s", action)
                 c = CHAT_COUNTER.get(chat_id, 0) + 1
                 CHAT_COUNTER[chat_id] = c
                 text_response = rss[len(rss) % c]
