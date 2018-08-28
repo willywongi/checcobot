@@ -20,7 +20,7 @@ def get_wsgiapp(callback):
 			'console': {
 				'level': 'DEBUG',
 				'class': 'logging.StreamHandler',
-				'formatter': 'simple',
+				'formatter': 'default',
 			},
 		},
 		'root': {
