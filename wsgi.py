@@ -9,6 +9,7 @@ from logic import main
 def get_wsgiapp(callback):
 	# configuring logging
 	logging.config.dictConfig({
+		'version': 1,
 		'formatters': {
 			'default': {
 				'format': '%(asctime)s\t%(levelname)-8s\t%(name)s\t%(message)s',
